@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>Market Watch</title>
+  <style>
+    :root {
+      --primary:      #d4a84b;
+      --primary-dim:  rgba(212, 168, 75, 0.1);
+      --primary-dark: #b88c35;
+      --bg:           #0d0d0d;
+      --surface:      #1a1a1a;
+      --surface-hi:   #242424;
+      --border:       #2e2e2e;
+      --text:         #f0f0f0;
+      --text-sub:     #777777;
+      --green:        #34c759;
+      --green-dim:    rgba(52, 199, 89, 0.12);
+      --red:          #ff3b30;
+      --red-dim:      rgba(255, 59, 48, 0.12);
+      --safe-top:     env(safe-area-inset-top, 0px);
+      --safe-bot:     env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 16px calc(32px + var(--safe-bot));
+    }
+
+    /* ── Header ── */
+    header {
+      padding-top: calc(20px + var(--safe-top));
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+
+    .brand-monogram {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 1rem; font-weight: 700;
+      color: var(--text); line-height: 1; letter-spacing: -0.3px;
+    }
+
+    .brand-text p {
+      font-size: 0.68rem; color: var(--text-sub); margin-top: 3px;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .back-btn, .refresh-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: color 0.15s, border-color 0.15s;
+      display: flex; align-items: center; gap: 5px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .back-btn:hover, .refresh-btn:hover { color: var(--primary); border-color: var(--primary); }
+    .refresh-btn:active { transform: scale(0.96); }
+    .refresh-btn.spinning .r-icon { display: inline-block; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Period pill ── */
+    .period-bar {
+      display: flex; gap: 6px; margin-bottom: 24px;
+    }
+
+    .period-pill {
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface-hi);
+      color: var(--text-sub);
+      cursor: pointer; touch-action: manipulation;
+      transition: all 0.15s;
+    }
+
+    .period-pill.active {
+      background: var(--primary-dim);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ── Section ── */
+    .section { margin-bottom: 28px; }
+
+    .section-title {
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--text-sub); margin-bottom: 10px; padding-left: 2px;
+    }
+
+    /* ── Stock card ── */
+    .stock-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .stock-card:hover { border-color: #3e3e3e; }
+
+    .stock-info { flex: 1; min-width: 0; }
+
+    .stock-name {
+      font-weight: 700; font-size: 0.92rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .stock-ticker {
+      font-size: 0.7rem; color: var(--text-sub); margin-top: 2px; letter-spacing: 0.3px;
+    }
+
+    .stock-spark { flex-shrink: 0; }
+
+    .stock-price-block { text-align: right; flex-shrink: 0; }
+
+    .stock-price {
+      font-size: 1rem; font-weight: 700; color: var(--text); white-space: nowrap;
+    }
+
+    .stock-change {
+      font-size: 0.74rem; font-weight: 700; margin-top: 5px;
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+    }
+
+    .stock-change.up   { color: var(--green); background: var(--green-dim); }
+    .stock-change.down { color: var(--red);   background: var(--red-dim);   }
+    .stock-change.flat { color: var(--text-sub); background: var(--surface-hi); }
+
+    /* ── Loading skeleton ── */
+    .skel {
+      background: var(--surface-hi);
+      border-radius: 5px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1;   }
+    }
+
+    .skel-price { width: 70px; height: 14px; margin-left: auto; }
+    .skel-change { width: 54px; height: 22px; margin-left: auto; margin-top: 5px; }
+    .skel-spark { width: 80px; height: 36px; }
+
+    /* ── Error banner ── */
+    .error-banner {
+      background: rgba(255,59,48,0.08);
+      border: 1px solid rgba(255,59,48,0.2);
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 0.8rem;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      font-size: 0.7rem; color: var(--text-sub);
+      text-align: center; line-height: 1.7;
+      margin-top: 8px;
+    }
+
+    .footer a { color: var(--primary); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 400px) {
+      .stock-spark { display: none; }
+      .back-btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">
+      <div class="brand-monogram">📈</div>
+      <div class="brand-text">
+        <h1>Market Watch</h1>
+        <p>SG &amp; US equities · live prices</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="back-btn" href="./index.html">← <span>Kopi</span></a>
+      <button class="refresh-btn" id="refresh-btn" aria-label="Refresh">
+        <span class="r-icon">↻</span> Refresh
+      </button>
+    </div>
+  </header>
+
+  <div class="period-bar">
+    <button class="period-pill active" data-range="5d" data-interval="1d">1W</button>
+    <button class="period-pill"        data-range="1mo" data-interval="1d">1M</button>
+    <button class="period-pill"        data-range="3mo" data-interval="1wk">3M</button>
+    <button class="period-pill"        data-range="1y"  data-interval="1wk">1Y</button>
+  </div>
+
+  <div id="error-area"></div>
+
+  <div class="section">
+    <div class="section-title">Singapore ETFs</div>
+    <div id="grid-sg-etf"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Singapore Blue Chips</div>
+    <div id="grid-sg-blue"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">US Stocks &amp; ETFs</div>
+    <div id="grid-us"></div>
+  </div>
+
+  <div class="footer" id="footer">Loading data…</div>
+
+</div>
+
+<script>
+const STOCKS = [
+  { symbol: 'ES3.SI', name: 'SPDR STI ETF',        group: 'sg-etf',  currency: 'SGD' },
+  { symbol: 'G3B.SI', name: 'Nikko AM STI ETF',     group: 'sg-etf',  currency: 'SGD' },
+  { symbol: 'D05.SI', name: 'DBS Group',             group: 'sg-blue', currency: 'SGD' },
+  { symbol: 'O39.SI', name: 'OCBC Bank',             group: 'sg-blue', currency: 'SGD' },
+  { symbol: 'U11.SI', name: 'UOB',                   group: 'sg-blue', currency: 'SGD' },
+  { symbol: 'VOO',    name: 'Vanguard S&P 500 ETF',  group: 'us',      currency: 'USD' },
+  { symbol: 'NVDA',   name: 'NVIDIA',                group: 'us',      currency: 'USD' },
+  { symbol: 'AAPL',   name: 'Apple',                 group: 'us',      currency: 'USD' },
+];
+
+const GRIDS = { 'sg-etf': 'grid-sg-etf', 'sg-blue': 'grid-sg-blue', 'us': 'grid-us' };
+
+let currentRange    = '5d';
+let currentInterval = '1d';
+
+/* ── Sparkline SVG ── */
+function sparkSVG(prices, positive) {
+  const pts = prices.filter(p => p != null && !isNaN(p));
+  if (pts.length < 2) return `<svg width="80" height="36"></svg>`;
+  const W = 80, H = 36, pad = 2;
+  const mn = Math.min(...pts), mx = Math.max(...pts);
+  const range = mx - mn || Math.abs(mn) * 0.01 || 1;
+  const mapped = pts.map((p, i) => {
+    const x = (pad + (i / (pts.length - 1)) * (W - pad * 2)).toFixed(1);
+    const y = (H - pad - ((p - mn) / range) * (H - pad * 2)).toFixed(1);
+    return `${x},${y}`;
+  });
+  const line = mapped.join(' ');
+  const area = `${pad},${H - pad} ${line} ${W - pad},${H - pad}`;
+  const stroke = positive ? '#34c759' : '#ff3b30';
+  const fill   = positive ? 'rgba(52,199,89,0.15)' : 'rgba(255,59,48,0.15)';
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <polygon points="${area}" fill="${fill}"/>
+    <polyline points="${line}" fill="none" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+/* ── Format helpers ── */
+function fmtPrice(p, currency) {
+  return (currency === 'SGD' ? 'S$' : '$') + p.toFixed(2);
+}
+
+function fmtPct(pct) {
+  return (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+}
+
+/* ── Card ID ── */
+function cardId(symbol) { return 'card-' + symbol.replace(/\./g, '-'); }
+
+/* ── Render skeleton cards ── */
+function renderSkeletons() {
+  Object.values(GRIDS).forEach(id => document.getElementById(id).innerHTML = '');
+  STOCKS.forEach(s => {
+    const grid = document.getElementById(GRIDS[s.group]);
+    const div = document.createElement('div');
+    div.className = 'stock-card';
+    div.id = cardId(s.symbol);
+    div.innerHTML = `
+      <div class="stock-info">
+        <div class="stock-name">${s.name}</div>
+        <div class="stock-ticker">${s.symbol}</div>
+      </div>
+      <div class="stock-spark"><div class="skel skel-spark"></div></div>
+      <div class="stock-price-block">
+        <div class="skel skel-price"></div>
+        <div class="skel skel-change"></div>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+/* ── Update card with live data ── */
+function fillCard(stock, data) {
+  const card = document.getElementById(cardId(stock.symbol));
+  if (!card) return;
+
+  if (!data) {
+    card.querySelector('.stock-price-block').innerHTML =
+      `<div class="stock-price" style="color:var(--text-sub)">N/A</div>
+       <div class="stock-change flat">— error</div>`;
+    card.querySelector('.stock-spark').innerHTML = `<svg width="80" height="36"></svg>`;
+    return;
+  }
+
+  const { current, weekStart, closes } = data;
+  const pct = ((current - weekStart) / weekStart) * 100;
+  const cls = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
+  const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
+
+  card.querySelector('.stock-spark').innerHTML = sparkSVG(closes, pct >= 0);
+  card.querySelector('.stock-price-block').innerHTML = `
+    <div class="stock-price">${fmtPrice(current, stock.currency)}</div>
+    <div class="stock-change ${cls}">${arrow} ${fmtPct(pct)}</div>`;
+}
+
+/* ── Fetch via allorigins CORS proxy ── */
+async function fetchStock(symbol, range, interval) {
+  const target = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
+  const proxy  = `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`;
+
+  const res  = await fetch(proxy, { signal: AbortSignal.timeout(12000) });
+  const wrap = await res.json();
+  const json = JSON.parse(wrap.contents);
+
+  const result = json?.chart?.result?.[0];
+  if (!result) throw new Error('no result');
+
+  const closes = result.indicators.quote[0].close;
+  const valid  = closes.filter(c => c != null);
+  if (!valid.length) throw new Error('no closes');
+
+  return {
+    current:   result.meta.regularMarketPrice ?? valid[valid.length - 1],
+    weekStart: valid[0],
+    closes,
+  };
+}
+
+/* ── Load all ── */
+async function loadAll() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  document.getElementById('error-area').innerHTML = '';
+  renderSkeletons();
+
+  const settled = await Promise.allSettled(
+    STOCKS.map(s => fetchStock(s.symbol, currentRange, currentInterval))
+  );
+
+  let fails = 0;
+  settled.forEach((r, i) => {
+    if (r.status === 'fulfilled') {
+      fillCard(STOCKS[i], r.value);
+    } else {
+      fillCard(STOCKS[i], null);
+      fails++;
+    }
+  });
+
+  if (fails) {
+    document.getElementById('error-area').innerHTML =
+      `<div class="error-banner">⚠ ${fails} ticker${fails > 1 ? 's' : ''} could not be loaded.
+      Data is fetched from Yahoo Finance via a public CORS proxy — try refreshing in a moment.</div>`;
+  }
+
+  const now = new Date();
+  const periodLabel = document.querySelector('.period-pill.active').textContent;
+  document.getElementById('footer').innerHTML =
+    `Updated ${now.toLocaleTimeString()} · ${now.toLocaleDateString()} ·
+    <a href="https://finance.yahoo.com" target="_blank" rel="noopener">Yahoo Finance</a> · ${periodLabel} view`;
+
+  btn.classList.remove('spinning');
+}
+
+/* ── Period pills ── */
+document.querySelectorAll('.period-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    currentRange    = pill.dataset.range;
+    currentInterval = pill.dataset.interval;
+    loadAll();
+  });
+});
+
+/* ── Refresh button ── */
+document.getElementById('refresh-btn').addEventListener('click', loadAll);
+
+/* ── Auto-refresh every 5 minutes ── */
+setInterval(loadAll, 5 * 60 * 1000);
+
+/* ── Initial load ── */
+loadAll();
+</script>
+</body>
+</html>

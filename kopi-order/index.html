@@ -6,6 +6,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#0d0d0d" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
   <title>Kopi Order</title>
   <style>
     :root {
@@ -36,7 +38,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Layout shell ── */
     .shell {
       display: flex;
       flex-direction: column;
@@ -61,37 +62,22 @@
       z-index: 10;
     }
 
-    header .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    header .brand { display: flex; align-items: center; gap: 10px; }
 
     .brand-monogram {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 36px; height: 36px; border-radius: 10px;
       background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
     }
 
     header .brand-text h1 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-      letter-spacing: -0.3px;
+      font-size: 1rem; font-weight: 700; color: var(--text);
+      line-height: 1; letter-spacing: -0.3px;
     }
 
     header .brand-text p {
-      font-size: 0.68rem;
-      color: var(--text-sub);
-      margin-top: 3px;
-      letter-spacing: 0.2px;
+      font-size: 0.68rem; color: var(--text-sub); margin-top: 3px; letter-spacing: 0.2px;
     }
 
     .cart-badge-btn {
@@ -99,39 +85,25 @@
       background: var(--surface-hi);
       border: 1px solid var(--border);
       border-radius: 12px;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      cursor: pointer;
-      touch-action: manipulation;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; cursor: pointer; touch-action: manipulation;
       transition: transform 0.1s;
     }
 
     .cart-badge-btn:active { transform: scale(0.92); }
 
     .badge {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: var(--primary);
-      color: #0d0d0d;
-      font-size: 0.6rem;
-      font-weight: 800;
-      min-width: 16px;
-      height: 16px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 4px;
+      position: absolute; top: 4px; right: 4px;
+      background: var(--primary); color: #0d0d0d;
+      font-size: 0.6rem; font-weight: 800;
+      min-width: 16px; height: 16px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
     }
 
     .badge.hidden { display: none; }
 
-    /* ── Scrollable content ── */
+    /* ── Views ── */
     .view {
       flex: 1;
       overflow-y: auto;
@@ -144,7 +116,7 @@
 
     .view.active { display: flex; }
 
-    /* ── Bottom tab bar ── */
+    /* ── Tab bar ── */
     .tab-bar {
       flex-shrink: 0;
       height: calc(var(--tab-h) + var(--safe-bot));
@@ -156,47 +128,28 @@
 
     .tab-btn {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      touch-action: manipulation;
-      color: var(--text-sub);
-      transition: color 0.15s;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 3px; border: none; background: none;
+      cursor: pointer; touch-action: manipulation;
+      color: var(--text-sub); transition: color 0.15s;
       position: relative;
     }
 
     .tab-btn.active { color: var(--primary); }
-
     .tab-btn .tab-icon { font-size: 1.3rem; }
-
     .tab-btn .tab-label {
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 0.65rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
     }
 
     .tab-btn .tab-badge {
-      position: absolute;
-      top: 8px;
-      left: 50%;
+      position: absolute; top: 8px; left: 50%;
       transform: translateX(8px);
-      background: var(--primary);
-      color: #0d0d0d;
-      font-size: 0.6rem;
-      font-weight: 800;
-      min-width: 16px;
-      height: 16px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 4px;
+      background: var(--primary); color: #0d0d0d;
+      font-size: 0.6rem; font-weight: 800;
+      min-width: 16px; height: 16px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
     }
 
     .tab-btn .tab-badge.hidden { display: none; }
@@ -211,21 +164,13 @@
     }
 
     .card-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--text-sub);
-      margin-bottom: 12px;
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--text-sub); margin-bottom: 12px;
     }
 
     /* ── Option grids ── */
-    .option-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
+    .option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .option-grid.three-col { grid-template-columns: repeat(3, 1fr); }
 
     .option-btn {
@@ -233,104 +178,56 @@
       background: var(--surface-hi);
       border-radius: 12px;
       padding: 14px 8px;
-      cursor: pointer;
-      touch-action: manipulation;
+      cursor: pointer; touch-action: manipulation;
       text-align: center;
       transition: border-color 0.15s, background 0.15s, transform 0.1s;
-      -webkit-user-select: none;
-      user-select: none;
+      -webkit-user-select: none; user-select: none;
       min-height: 64px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
 
     .option-btn:active { transform: scale(0.96); }
+    .option-btn.selected { border-color: var(--primary); background: var(--primary-dim); }
+    .option-btn .opt-label { font-size: 0.92rem; font-weight: 600; color: var(--text); display: block; }
+    .option-btn .opt-sub { font-size: 0.68rem; color: var(--text-sub); display: block; margin-top: 3px; line-height: 1.3; }
 
-    .option-btn.selected {
-      border-color: var(--primary);
-      background: var(--primary-dim);
-    }
-
-    .option-btn .opt-label {
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: var(--text);
-      display: block;
-    }
-
-    .option-btn .opt-sub {
-      font-size: 0.68rem;
-      color: var(--text-sub);
-      display: block;
-      margin-top: 3px;
-      line-height: 1.3;
-    }
-
-    /* ── Quantity row ── */
-    .qty-row {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
+    /* ── Quantity ── */
+    .qty-row { display: flex; align-items: center; gap: 20px; }
 
     .qty-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface-hi);
-      font-size: 1.3rem;
-      cursor: pointer;
-      touch-action: manipulation;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text);
-      transition: background 0.1s, transform 0.1s;
-      -webkit-user-select: none;
-      user-select: none;
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--surface-hi);
+      font-size: 1.3rem; cursor: pointer; touch-action: manipulation;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text); transition: background 0.1s, transform 0.1s;
+      -webkit-user-select: none; user-select: none;
     }
 
     .qty-btn:active { background: var(--primary-dim); transform: scale(0.9); }
     .qty-btn:disabled { opacity: 0.3; }
 
     .qty-value {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--text);
-      min-width: 28px;
-      text-align: center;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--text); min-width: 28px; text-align: center;
     }
 
-    /* ── Add button (sticky at bottom of menu view) ── */
+    /* ── Add button ── */
     .add-btn-wrap {
-      position: sticky;
-      bottom: 0;
+      position: sticky; bottom: 0;
       margin: 8px -16px -16px;
       padding: 12px 16px 16px;
       background: linear-gradient(to bottom, transparent, var(--bg) 40%);
     }
 
     .add-btn {
-      width: 100%;
-      padding: 17px;
-      background: var(--primary);
-      color: #0d0d0d;
-      border: none;
-      border-radius: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      touch-action: manipulation;
+      width: 100%; padding: 17px;
+      background: var(--primary); color: #0d0d0d;
+      border: none; border-radius: 14px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; touch-action: manipulation;
       transition: background 0.15s, transform 0.1s;
-      -webkit-user-select: none;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      -webkit-user-select: none; user-select: none;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
 
     .add-btn:active { transform: scale(0.98); background: var(--primary-dark); }
@@ -338,14 +235,9 @@
     /* ── Cart view ── */
     .cart-empty {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      color: var(--text-sub);
-      text-align: center;
-      padding: 40px 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; color: var(--text-sub); text-align: center; padding: 40px 0;
     }
 
     .cart-empty .empty-icon { font-size: 3rem; opacity: 0.4; }
@@ -355,192 +247,232 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 14px 16px; margin-bottom: 10px;
+      display: flex; align-items: center; justify-content: space-between;
     }
 
     .order-item .item-info { flex: 1; }
-
-    .order-item .item-name {
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text);
-    }
-
-    .order-item .item-detail {
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      margin-top: 3px;
-    }
-
-    .order-item .item-price {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--primary);
-      margin-right: 12px;
-    }
+    .order-item .item-name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+    .order-item .item-detail { font-size: 0.75rem; color: var(--text-sub); margin-top: 3px; }
+    .order-item .item-price { font-weight: 700; font-size: 0.95rem; color: var(--primary); margin-right: 12px; }
 
     .remove-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface-hi);
-      color: var(--text-sub);
-      font-size: 0.75rem;
-      cursor: pointer;
-      touch-action: manipulation;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--surface-hi);
+      color: var(--text-sub); font-size: 0.75rem;
+      cursor: pointer; touch-action: manipulation;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.1s, transform 0.1s, color 0.1s;
       flex-shrink: 0;
     }
 
     .remove-btn:active { transform: scale(0.88); background: rgba(212,168,75,0.15); color: var(--primary); }
 
-    /* ── Order summary card ── */
+    /* ── Name / table input ── */
+    .name-input-wrap { margin-bottom: 12px; }
+
+    .name-input-label {
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--text-sub); margin-bottom: 8px; display: block;
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--surface-hi);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .name-input:focus { border-color: var(--primary); }
+    .name-input::placeholder { color: var(--text-sub); }
+
+    /* ── Summary card ── */
     .summary-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 18px 20px;
-      margin-bottom: 12px;
+      padding: 18px 20px; margin-bottom: 12px;
     }
 
     .summary-card .s-label {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--text-sub);
-      margin-bottom: 12px;
+      font-size: 0.68rem; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--text-sub); margin-bottom: 12px;
     }
 
     .summary-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      color: var(--text-sub);
-      margin-bottom: 6px;
+      display: flex; justify-content: space-between;
+      font-size: 0.88rem; color: var(--text-sub); margin-bottom: 6px;
     }
 
     .summary-row.total {
       border-top: 1px solid var(--border);
-      padding-top: 10px;
-      margin-top: 8px;
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text);
+      padding-top: 10px; margin-top: 8px;
+      font-weight: 700; font-size: 1rem; color: var(--text);
     }
 
     /* ── Place order button ── */
     .place-btn-wrap {
-      position: sticky;
-      bottom: 0;
+      position: sticky; bottom: 0;
       margin: 8px -16px -16px;
       padding: 12px 16px 16px;
       background: linear-gradient(to bottom, transparent, var(--bg) 40%);
     }
 
     .place-btn {
-      width: 100%;
-      padding: 17px;
-      background: var(--primary);
-      color: #0d0d0d;
-      border: none;
-      border-radius: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      touch-action: manipulation;
+      width: 100%; padding: 17px;
+      background: var(--primary); color: #0d0d0d;
+      border: none; border-radius: 14px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; touch-action: manipulation;
       transition: background 0.15s, transform 0.1s;
-      -webkit-user-select: none;
-      user-select: none;
+      -webkit-user-select: none; user-select: none;
     }
 
     .place-btn:active { transform: scale(0.98); background: var(--primary-dark); }
     .place-btn:disabled { background: #3a3020; color: #6a5a40; cursor: default; transform: none; }
 
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--surface-hi);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 11px 20px;
-      border-radius: 100px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      white-space: nowrap;
-      z-index: 100;
-      max-width: calc(100vw - 32px);
-      text-align: center;
-    }
-
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
     /* ── Success screen ── */
     .success-screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      flex: 1;
-      text-align: center;
-      padding: 40px 20px;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; flex: 1; text-align: center; padding: 40px 20px;
     }
 
     .success-screen.active { display: flex; }
 
     .success-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+      width: 80px; height: 80px; border-radius: 50%;
       background: var(--primary-dim);
       border: 1px solid rgba(212,168,75,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 2.5rem;
     }
 
-    .success-screen h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--text);
+    .success-screen h2 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+
+    .success-order-chip {
+      background: var(--primary); color: #0d0d0d;
+      padding: 6px 20px; border-radius: 100px;
+      font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;
     }
 
-    .success-screen p {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      line-height: 1.6;
-    }
+    .success-screen p { font-size: 0.9rem; color: var(--text-sub); line-height: 1.6; }
 
     .new-order-btn {
-      margin-top: 8px;
-      padding: 14px 32px;
-      background: var(--primary);
-      color: #0d0d0d;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      touch-action: manipulation;
+      margin-top: 8px; padding: 14px 32px;
+      background: var(--primary); color: #0d0d0d;
+      border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; touch-action: manipulation;
       transition: transform 0.1s, background 0.15s;
     }
 
     .new-order-btn:active { transform: scale(0.96); background: var(--primary-dark); }
+
+    /* ── Orders history view ── */
+    .orders-empty {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; color: var(--text-sub); text-align: center; padding: 40px 0;
+    }
+
+    .orders-empty .empty-icon { font-size: 3rem; opacity: 0.4; }
+    .orders-empty p { font-size: 0.9rem; line-height: 1.6; }
+
+    .history-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 10px;
+    }
+
+    .history-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 6px;
+    }
+
+    .history-order-num {
+      font-weight: 800; font-size: 1rem; color: var(--primary); letter-spacing: 0.5px;
+    }
+
+    .history-meta {
+      font-size: 0.75rem; color: var(--text-sub); margin-top: 2px;
+    }
+
+    .history-items-text {
+      font-size: 0.82rem; color: var(--text-sub);
+      margin-bottom: 10px; line-height: 1.5;
+    }
+
+    .history-footer {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .history-total {
+      font-weight: 700; color: var(--text); font-size: 0.9rem;
+    }
+
+    /* ── Status badges ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 0.7rem; font-weight: 700;
+    }
+
+    .status-badge::before { content: '●'; font-size: 0.5rem; }
+
+    .status-queued {
+      background: rgba(212,168,75,0.12); color: var(--primary);
+      border: 1px solid rgba(212,168,75,0.3);
+    }
+
+    .status-preparing {
+      background: rgba(255,149,0,0.12); color: #ff9500;
+      border: 1px solid rgba(255,149,0,0.3);
+    }
+
+    .status-ready {
+      background: rgba(52,199,89,0.12); color: #34c759;
+      border: 1px solid rgba(52,199,89,0.3);
+    }
+
+    /* ── Clear history ── */
+    .clear-btn {
+      width: 100%; padding: 13px;
+      background: transparent; color: var(--text-sub);
+      border: 1px solid var(--border); border-radius: 12px;
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; touch-action: manipulation;
+      margin-top: 4px; margin-bottom: 16px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .clear-btn:active { background: var(--surface-hi); color: var(--text); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
+      left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--surface-hi);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 20px; border-radius: 100px;
+      font-size: 0.85rem; font-weight: 500;
+      opacity: 0; transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none; white-space: nowrap; z-index: 100;
+      max-width: calc(100vw - 32px); text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -564,7 +496,6 @@
   <!-- Menu View -->
   <div class="view active" id="view-menu">
 
-    <!-- Type -->
     <div class="card">
       <div class="card-label">Choose your drink</div>
       <div class="option-grid" id="type-grid">
@@ -595,7 +526,6 @@
       </div>
     </div>
 
-    <!-- Temperature -->
     <div class="card">
       <div class="card-label">Temperature</div>
       <div class="option-grid three-col" id="temp-grid">
@@ -614,7 +544,6 @@
       </div>
     </div>
 
-    <!-- Size -->
     <div class="card">
       <div class="card-label">Size</div>
       <div class="option-grid" id="size-grid">
@@ -629,7 +558,6 @@
       </div>
     </div>
 
-    <!-- Quantity -->
     <div class="card">
       <div class="card-label">Quantity</div>
       <div class="qty-row">
@@ -639,7 +567,6 @@
       </div>
     </div>
 
-    <!-- Add button sticky at bottom -->
     <div class="add-btn-wrap">
       <button class="add-btn" id="add-btn">
         <span>Add to Cart</span>
@@ -655,9 +582,15 @@
     <div class="success-screen" id="success-screen">
       <div class="success-icon">✅</div>
       <h2>Order Placed!</h2>
-      <p>Your kopi is being prepared.<br/>It'll be ready soon!</p>
+      <div class="success-order-chip" id="success-order-num">K001</div>
+      <p>Your kopi is being prepared.<br/>Track it in the <strong>Orders</strong> tab!</p>
       <button class="new-order-btn" id="new-order-btn">Order Again</button>
     </div>
+  </div>
+
+  <!-- Orders History View -->
+  <div class="view" id="view-orders">
+    <div id="orders-content"></div>
   </div>
 
   <!-- Tab Bar -->
@@ -671,6 +604,10 @@
       <span class="tab-label">Cart</span>
       <span class="tab-badge hidden" id="tab-badge"></span>
     </button>
+    <button class="tab-btn" id="tab-orders" aria-label="Orders">
+      <span class="tab-icon">📦</span>
+      <span class="tab-label">Orders</span>
+    </button>
   </nav>
 
 </div>
@@ -679,21 +616,68 @@
 
 <script>
   const PRICES = { Regular: 1.50, Large: 2.00 };
+  const QUEUE_MS    = 60 * 1000;        // queued for 1 min
+  const PREPARE_MS  = 4 * 60 * 1000;   // ready after 4 min
 
   let sel = { type: 'Kopi', temp: 'Hot', size: 'Regular' };
   let qty = 1;
-  let order = [];
+  let cart = [];
+  let ordersTimer = null;
+
+  /* ── localStorage helpers ── */
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem('kopiHistory') || '[]'); } catch { return []; }
+  }
+
+  function saveHistory(h) {
+    localStorage.setItem('kopiHistory', JSON.stringify(h));
+  }
+
+  function getNextOrderNum() {
+    const n = parseInt(localStorage.getItem('kopiOrderNum') || '0') + 1;
+    localStorage.setItem('kopiOrderNum', String(n));
+    return 'K' + String(n).padStart(3, '0');
+  }
+
+  /* ── Status ── */
+  function getStatus(placedAt) {
+    const elapsed = Date.now() - placedAt;
+    if (elapsed >= PREPARE_MS) return 'ready';
+    if (elapsed >= QUEUE_MS)   return 'preparing';
+    return 'queued';
+  }
+
+  function statusLabel(status) {
+    return { queued: 'Queued', preparing: 'Preparing', ready: 'Ready ✓' }[status];
+  }
+
+  /* ── Relative time ── */
+  function relativeTime(ts) {
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60)  return 'just now';
+    const m = Math.floor(s / 60);
+    if (m < 60)  return m + ' min ago';
+    const h = Math.floor(m / 60);
+    if (h < 24)  return h + 'h ago';
+    return new Date(ts).toLocaleDateString();
+  }
 
   /* ── Tab switching ── */
   function showTab(tab) {
-    document.getElementById('view-menu').classList.toggle('active', tab === 'menu');
-    document.getElementById('view-cart').classList.toggle('active', tab === 'cart');
-    document.getElementById('tab-menu').classList.toggle('active', tab === 'menu');
-    document.getElementById('tab-cart').classList.toggle('active', tab === 'cart');
+    clearInterval(ordersTimer);
+    ['menu', 'cart', 'orders'].forEach(t => {
+      document.getElementById('view-' + t).classList.toggle('active', t === tab);
+      document.getElementById('tab-'  + t).classList.toggle('active', t === tab);
+    });
+    if (tab === 'orders') {
+      renderOrders();
+      ordersTimer = setInterval(renderOrders, 30000);
+    }
   }
 
-  document.getElementById('tab-menu').addEventListener('click', () => showTab('menu'));
-  document.getElementById('tab-cart').addEventListener('click', () => showTab('cart'));
+  document.getElementById('tab-menu').addEventListener('click',   () => showTab('menu'));
+  document.getElementById('tab-cart').addEventListener('click',   () => showTab('cart'));
+  document.getElementById('tab-orders').addEventListener('click', () => showTab('orders'));
   document.getElementById('header-cart-btn').addEventListener('click', () => showTab('cart'));
 
   /* ── Option groups ── */
@@ -727,30 +711,30 @@
 
   function updateAddBtnPrice() {
     const total = (PRICES[sel.size] * qty).toFixed(2);
-    document.getElementById('add-btn-price').textContent = `· $${total}`;
+    document.getElementById('add-btn-price').textContent = '· $' + total;
   }
 
   /* ── Add to cart ── */
   document.getElementById('add-btn').addEventListener('click', () => {
     const item = { type: sel.type, temp: sel.temp, size: sel.size, qty, price: PRICES[sel.size], id: Date.now() };
-    order.push(item);
+    cart.push(item);
     renderCart();
     updateBadges();
-    showToast(`Added ${qty}× ${formatName(item)}`);
+    showToast('Added ' + qty + '× ' + formatName(item));
   });
 
-  /* ── Cart render ── */
+  /* ── Format helpers ── */
   function formatName(item) {
     const tempMap = { Hot: '', Iced: ' Peng', Takeaway: ' (Dabao)' };
-    return `${item.type}${tempMap[item.temp] || ''}`;
+    return item.type + (tempMap[item.temp] || '');
   }
 
+  /* ── Cart render ── */
   function renderCart() {
     const el = document.getElementById('cart-content');
-    const success = document.getElementById('success-screen');
-    success.classList.remove('active');
+    document.getElementById('success-screen').classList.remove('active');
 
-    if (order.length === 0) {
+    if (cart.length === 0) {
       el.innerHTML = `
         <div class="cart-empty">
           <span class="empty-icon">🛒</span>
@@ -759,8 +743,9 @@
       return;
     }
 
-    const total = order.reduce((s, i) => s + i.price * i.qty, 0);
-    const items = order.map(item => `
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+    const itemsHTML = cart.map(item => `
       <div class="order-item">
         <div class="item-info">
           <div class="item-name">${formatName(item)} ×${item.qty}</div>
@@ -770,12 +755,16 @@
         <button class="remove-btn" onclick="removeItem(${item.id})" aria-label="Remove">✕</button>
       </div>`).join('');
 
-    const summaryLines = order.map(item =>
+    const summaryLines = cart.map(item =>
       `<div class="summary-row"><span>${formatName(item)} ×${item.qty}</span><span>$${(item.price * item.qty).toFixed(2)}</span></div>`
     ).join('');
 
     el.innerHTML = `
-      ${items}
+      ${itemsHTML}
+      <div class="name-input-wrap">
+        <label class="name-input-label" for="name-input">Your name / table number</label>
+        <input class="name-input" id="name-input" type="text" placeholder="e.g. Table 5 or Ali" autocomplete="off" />
+      </div>
       <div class="summary-card">
         <div class="s-label">Order Summary</div>
         ${summaryLines}
@@ -789,15 +778,35 @@
   }
 
   function removeItem(id) {
-    order = order.filter(i => i.id !== id);
+    cart = cart.filter(i => i.id !== id);
     renderCart();
     updateBadges();
   }
 
   function placeOrder() {
-    order = [];
+    const nameEl = document.getElementById('name-input');
+    const name = nameEl ? nameEl.value.trim() : '';
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const orderNum = getNextOrderNum();
+
+    const entry = {
+      id: Date.now(),
+      orderNum,
+      name: name || 'Walk-in',
+      items: cart.map(i => ({ ...i })),
+      total,
+      placedAt: Date.now()
+    };
+
+    const history = loadHistory();
+    history.unshift(entry);
+    if (history.length > 30) history.pop();
+    saveHistory(history);
+
+    cart = [];
     updateBadges();
     document.getElementById('cart-content').innerHTML = '';
+    document.getElementById('success-order-num').textContent = orderNum;
     document.getElementById('success-screen').classList.add('active');
   }
 
@@ -807,9 +816,53 @@
     showTab('menu');
   });
 
+  /* ── Orders history render ── */
+  function renderOrders() {
+    const history = loadHistory();
+    const el = document.getElementById('orders-content');
+
+    if (history.length === 0) {
+      el.innerHTML = `
+        <div class="orders-empty">
+          <span class="empty-icon">📦</span>
+          <p>No orders yet.<br/>Place your first order from the Menu!</p>
+        </div>`;
+      return;
+    }
+
+    const itemsHTML = history.map(order => {
+      const status = getStatus(order.placedAt);
+      const itemsList = order.items.map(i => `${formatName(i)} ×${i.qty}`).join(', ');
+      return `
+        <div class="history-item">
+          <div class="history-header">
+            <div class="history-left">
+              <div class="history-order-num">${order.orderNum}</div>
+              <div class="history-meta">${order.name} · ${relativeTime(order.placedAt)}</div>
+            </div>
+            <span class="status-badge status-${status}">${statusLabel(status)}</span>
+          </div>
+          <div class="history-items-text">${itemsList}</div>
+          <div class="history-footer">
+            <span class="history-total">$${order.total.toFixed(2)}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    el.innerHTML = `
+      ${itemsHTML}
+      <button class="clear-btn" onclick="clearHistory()">Clear Order History</button>`;
+  }
+
+  function clearHistory() {
+    localStorage.removeItem('kopiHistory');
+    renderOrders();
+    showToast('History cleared');
+  }
+
   /* ── Badges ── */
   function updateBadges() {
-    const count = order.reduce((s, i) => s + i.qty, 0);
+    const count = cart.reduce((s, i) => s + i.qty, 0);
     const hidden = count === 0;
     const label = count > 9 ? '9+' : String(count);
     ['header-badge', 'tab-badge'].forEach(id => {
@@ -829,7 +882,15 @@
     toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
   }
 
+  /* ── Init ── */
   renderCart();
+  renderOrders();
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
 </script>
 </body>
 </html>

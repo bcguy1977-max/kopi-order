@@ -506,7 +506,8 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: var(--brown-light);
+      background: var(--primary-dim);
+      border: 1px solid rgba(212,168,75,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -515,30 +516,31 @@
 
     .success-screen h2 {
       font-size: 1.3rem;
-      color: var(--brown-dark);
+      font-weight: 700;
+      color: var(--text);
     }
 
     .success-screen p {
       font-size: 0.9rem;
       color: var(--text-sub);
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .new-order-btn {
       margin-top: 8px;
       padding: 14px 32px;
-      background: var(--brown-accent);
-      color: white;
+      background: var(--primary);
+      color: #0d0d0d;
       border: none;
       border-radius: 12px;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       touch-action: manipulation;
-      transition: transform 0.1s;
+      transition: transform 0.1s, background 0.15s;
     }
 
-    .new-order-btn:active { transform: scale(0.96); }
+    .new-order-btn:active { transform: scale(0.96); background: var(--primary-dark); }
   </style>
 </head>
 <body>
@@ -547,7 +549,7 @@
   <!-- Header -->
   <header>
     <div class="brand">
-      <span class="brand-icon">☕</span>
+      <div class="brand-monogram">☕</div>
       <div class="brand-text">
         <h1>Kopi Order</h1>
         <p>Your neighbourhood kopi stall</p>

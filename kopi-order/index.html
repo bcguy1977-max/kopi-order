@@ -4,20 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="theme-color" content="#fdf6ec" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0d0d0d" />
   <title>Kopi Order</title>
   <style>
     :root {
-      --brown-dark:   #3b1f0a;
-      --brown-mid:    #7a4f2e;
-      --brown-accent: #c87941;
-      --brown-light:  #fdf1e5;
-      --brown-border: #e8d8c8;
-      --bg:           #f5ede0;
-      --card:         #ffffff;
-      --text:         #3b1f0a;
-      --text-sub:     #9a7055;
+      --primary:      #d4a84b;
+      --primary-dim:  rgba(212, 168, 75, 0.1);
+      --primary-dark: #b88c35;
+      --bg:           #0d0d0d;
+      --surface:      #1a1a1a;
+      --surface-hi:   #242424;
+      --border:       #2e2e2e;
+      --text:         #f0f0f0;
+      --text-sub:     #777777;
       --tab-h:        60px;
       --header-h:     58px;
       --safe-top:     env(safe-area-inset-top, 0px);
@@ -33,6 +33,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── Layout shell ── */
@@ -49,13 +50,13 @@
       flex-shrink: 0;
       height: calc(var(--header-h) + var(--safe-top));
       padding-top: var(--safe-top);
-      background: var(--card);
+      background: var(--surface);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding-left: 20px;
       padding-right: 20px;
-      border-bottom: 1px solid var(--brown-border);
+      border-bottom: 1px solid var(--border);
       position: relative;
       z-index: 10;
     }
@@ -63,35 +64,47 @@
     header .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
-    header .brand-icon { font-size: 1.4rem; }
+    .brand-monogram {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
 
     header .brand-text h1 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--brown-dark);
+      color: var(--text);
       line-height: 1;
+      letter-spacing: -0.3px;
     }
 
     header .brand-text p {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--text-sub);
-      margin-top: 2px;
+      margin-top: 3px;
+      letter-spacing: 0.2px;
     }
 
     .cart-badge-btn {
       position: relative;
-      background: var(--brown-light);
-      border: none;
+      background: var(--surface-hi);
+      border: 1px solid var(--border);
       border-radius: 12px;
       width: 44px;
       height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       cursor: pointer;
       touch-action: manipulation;
       transition: transform 0.1s;
@@ -103,10 +116,10 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      background: var(--brown-accent);
-      color: white;
+      background: var(--primary);
+      color: #0d0d0d;
       font-size: 0.6rem;
-      font-weight: 700;
+      font-weight: 800;
       min-width: 16px;
       height: 16px;
       border-radius: 8px;
@@ -136,8 +149,8 @@
       flex-shrink: 0;
       height: calc(var(--tab-h) + var(--safe-bot));
       padding-bottom: var(--safe-bot);
-      background: var(--card);
-      border-top: 1px solid var(--brown-border);
+      background: var(--surface);
+      border-top: 1px solid var(--border);
       display: flex;
     }
 
@@ -157,7 +170,7 @@
       position: relative;
     }
 
-    .tab-btn.active { color: var(--brown-accent); }
+    .tab-btn.active { color: var(--primary); }
 
     .tab-btn .tab-icon { font-size: 1.3rem; }
 
@@ -173,10 +186,10 @@
       top: 8px;
       left: 50%;
       transform: translateX(8px);
-      background: var(--brown-accent);
-      color: white;
+      background: var(--primary);
+      color: #0d0d0d;
       font-size: 0.6rem;
-      font-weight: 700;
+      font-weight: 800;
       min-width: 16px;
       height: 16px;
       border-radius: 8px;
@@ -190,19 +203,19 @@
 
     /* ── Cards ── */
     .card {
-      background: var(--card);
+      background: var(--surface);
       border-radius: 16px;
       padding: 18px 16px;
       margin-bottom: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
     }
 
     .card-label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--brown-accent);
+      letter-spacing: 1.2px;
+      color: var(--text-sub);
       margin-bottom: 12px;
     }
 
@@ -216,8 +229,8 @@
     .option-grid.three-col { grid-template-columns: repeat(3, 1fr); }
 
     .option-btn {
-      border: 2px solid var(--brown-border);
-      background: white;
+      border: 1px solid var(--border);
+      background: var(--surface-hi);
       border-radius: 12px;
       padding: 14px 8px;
       cursor: pointer;
@@ -236,8 +249,8 @@
     .option-btn:active { transform: scale(0.96); }
 
     .option-btn.selected {
-      border-color: var(--brown-accent);
-      background: var(--brown-light);
+      border-color: var(--primary);
+      background: var(--primary-dim);
     }
 
     .option-btn .opt-label {
@@ -266,22 +279,22 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      border: 2px solid var(--brown-border);
-      background: white;
+      border: 1px solid var(--border);
+      background: var(--surface-hi);
       font-size: 1.3rem;
       cursor: pointer;
       touch-action: manipulation;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--brown-dark);
+      color: var(--text);
       transition: background 0.1s, transform 0.1s;
       -webkit-user-select: none;
       user-select: none;
     }
 
-    .qty-btn:active { background: var(--brown-light); transform: scale(0.9); }
-    .qty-btn:disabled { opacity: 0.35; }
+    .qty-btn:active { background: var(--primary-dim); transform: scale(0.9); }
+    .qty-btn:disabled { opacity: 0.3; }
 
     .qty-value {
       font-size: 1.4rem;

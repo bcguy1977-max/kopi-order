@@ -316,8 +316,8 @@
     .add-btn {
       width: 100%;
       padding: 17px;
-      background: var(--brown-accent);
-      color: white;
+      background: var(--primary);
+      color: #0d0d0d;
       border: none;
       border-radius: 14px;
       font-size: 1rem;
@@ -333,7 +333,7 @@
       gap: 8px;
     }
 
-    .add-btn:active { transform: scale(0.98); background: #a86030; }
+    .add-btn:active { transform: scale(0.98); background: var(--primary-dark); }
 
     /* ── Cart view ── */
     .cart-empty {
@@ -352,14 +352,14 @@
     .cart-empty p { font-size: 0.9rem; }
 
     .order-item {
-      background: var(--card);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 16px;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
     .order-item .item-info { flex: 1; }
@@ -379,7 +379,7 @@
     .order-item .item-price {
       font-weight: 700;
       font-size: 0.95rem;
-      color: var(--brown-accent);
+      color: var(--primary);
       margin-right: 12px;
     }
 
@@ -387,53 +387,53 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: none;
-      background: #fff0e8;
-      color: var(--brown-accent);
+      border: 1px solid var(--border);
+      background: var(--surface-hi);
+      color: var(--text-sub);
       font-size: 0.75rem;
       cursor: pointer;
       touch-action: manipulation;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.1s, transform 0.1s;
+      transition: background 0.1s, transform 0.1s, color 0.1s;
       flex-shrink: 0;
     }
 
-    .remove-btn:active { transform: scale(0.88); background: #ffe0cc; }
+    .remove-btn:active { transform: scale(0.88); background: rgba(212,168,75,0.15); color: var(--primary); }
 
     /* ── Order summary card ── */
     .summary-card {
-      background: var(--brown-dark);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 18px 20px;
       margin-bottom: 12px;
-      color: white;
     }
 
     .summary-card .s-label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #c8956a;
-      margin-bottom: 10px;
+      letter-spacing: 1.2px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
     }
 
     .summary-row {
       display: flex;
       justify-content: space-between;
       font-size: 0.88rem;
-      color: #f0dbc8;
+      color: var(--text-sub);
       margin-bottom: 6px;
     }
 
     .summary-row.total {
-      border-top: 1px solid #5a3020;
+      border-top: 1px solid var(--border);
       padding-top: 10px;
       margin-top: 8px;
       font-weight: 700;
       font-size: 1rem;
-      color: white;
+      color: var(--text);
     }
 
     /* ── Place order button ── */

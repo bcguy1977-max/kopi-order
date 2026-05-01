@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#fdf6ec" />
+  <title>Kopi Order</title>
+  <style>
+    :root {
+      --brown-dark:   #3b1f0a;
+      --brown-mid:    #7a4f2e;
+      --brown-accent: #c87941;
+      --brown-light:  #fdf1e5;
+      --brown-border: #e8d8c8;
+      --bg:           #f5ede0;
+      --card:         #ffffff;
+      --text:         #3b1f0a;
+      --text-sub:     #9a7055;
+      --tab-h:        60px;
+      --header-h:     58px;
+      --safe-top:     env(safe-area-inset-top, 0px);
+      --safe-bot:     env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── Layout shell ── */
+    .shell {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    header {
+      flex-shrink: 0;
+      height: calc(var(--header-h) + var(--safe-top));
+      padding-top: var(--safe-top);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-bottom: 1px solid var(--brown-border);
+      position: relative;
+      z-index: 10;
+    }
+
+    header .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header .brand-icon { font-size: 1.4rem; }
+
+    header .brand-text h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+      line-height: 1;
+    }
+
+    header .brand-text p {
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .cart-badge-btn {
+      position: relative;
+      background: var(--brown-light);
+      border: none;
+      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.1s;
+    }
+
+    .cart-badge-btn:active { transform: scale(0.92); }
+
+    .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--brown-accent);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    .badge.hidden { display: none; }
+
+    /* ── Scrollable content ── */
+    .view {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      display: none;
+      flex-direction: column;
+      padding: 16px 16px 16px;
+    }
+
+    .view.active { display: flex; }
+
+    /* ── Bottom tab bar ── */
+    .tab-bar {
+      flex-shrink: 0;
+      height: calc(var(--tab-h) + var(--safe-bot));
+      padding-bottom: var(--safe-bot);
+      background: var(--card);
+      border-top: 1px solid var(--brown-border);
+      display: flex;
+    }
+
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      touch-action: manipulation;
+      color: var(--text-sub);
+      transition: color 0.15s;
+      position: relative;
+    }
+
+    .tab-btn.active { color: var(--brown-accent); }
+
+    .tab-btn .tab-icon { font-size: 1.3rem; }
+
+    .tab-btn .tab-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-btn .tab-badge {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(8px);
+      background: var(--brown-accent);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    .tab-btn .tab-badge.hidden { display: none; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--brown-accent);
+      margin-bottom: 12px;
+    }
+
+    /* ── Option grids ── */
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .option-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+
+    .option-btn {
+      border: 2px solid var(--brown-border);
+      background: white;
+      border-radius: 12px;
+      padding: 14px 8px;
+      cursor: pointer;
+      touch-action: manipulation;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .option-btn:active { transform: scale(0.96); }
+
+    .option-btn.selected {
+      border-color: var(--brown-accent);
+      background: var(--brown-light);
+    }
+
+    .option-btn .opt-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      display: block;
+    }
+
+    .option-btn .opt-sub {
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      display: block;
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+
+    /* ── Quantity row ── */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .qty-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--brown-border);
+      background: white;
+      font-size: 1.3rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brown-dark);
+      transition: background 0.1s, transform 0.1s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .qty-btn:active { background: var(--brown-light); transform: scale(0.9); }
+    .qty-btn:disabled { opacity: 0.35; }
+
+    .qty-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 28px;
+      text-align: center;
+    }
+
+    /* ── Add button (sticky at bottom of menu view) ── */
+    .add-btn-wrap {
+      position: sticky;
+      bottom: 0;
+      margin: 8px -16px -16px;
+      padding: 12px 16px 16px;
+      background: linear-gradient(to bottom, transparent, var(--bg) 40%);
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 17px;
+      background: var(--brown-accent);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.15s, transform 0.1s;
+      -webkit-user-select: none;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .add-btn:active { transform: scale(0.98); background: #a86030; }
+
+    /* ── Cart view ── */
+    .cart-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-sub);
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .cart-empty .empty-icon { font-size: 3rem; opacity: 0.4; }
+    .cart-empty p { font-size: 0.9rem; }
+
+    .order-item {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .order-item .item-info { flex: 1; }
+
+    .order-item .item-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .order-item .item-detail {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-top: 3px;
+    }
+
+    .order-item .item-price {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--brown-accent);
+      margin-right: 12px;
+    }
+
+    .remove-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: #fff0e8;
+      color: var(--brown-accent);
+      font-size: 0.75rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s, transform 0.1s;
+      flex-shrink: 0;
+    }
+
+    .remove-btn:active { transform: scale(0.88); background: #ffe0cc; }
+
+    /* ── Order summary card ── */
+    .summary-card {
+      background: var(--brown-dark);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      color: white;
+    }
+
+    .summary-card .s-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #c8956a;
+      margin-bottom: 10px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: #f0dbc8;
+      margin-bottom: 6px;
+    }
+
+    .summary-row.total {
+      border-top: 1px solid #5a3020;
+      padding-top: 10px;
+      margin-top: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+    }
+
+    /* ── Place order button ── */
+    .place-btn-wrap {
+      position: sticky;
+      bottom: 0;
+      margin: 8px -16px -16px;
+      padding: 12px 16px 16px;
+      background: linear-gradient(to bottom, transparent, var(--bg) 40%);
+    }
+
+    .place-btn {
+      width: 100%;
+      padding: 17px;
+      background: var(--brown-dark);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.15s, transform 0.1s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .place-btn:active { transform: scale(0.98); background: #5a3020; }
+    .place-btn:disabled { background: #b0926e; cursor: default; transform: none; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--brown-dark);
+      color: white;
+      padding: 11px 20px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 100;
+      max-width: calc(100vw - 32px);
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Success screen ── */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex: 1;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-screen.active { display: flex; }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--brown-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .success-screen h2 {
+      font-size: 1.3rem;
+      color: var(--brown-dark);
+    }
+
+    .success-screen p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    .new-order-btn {
+      margin-top: 8px;
+      padding: 14px 32px;
+      background: var(--brown-accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.1s;
+    }
+
+    .new-order-btn:active { transform: scale(0.96); }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <span class="brand-icon">☕</span>
+      <div class="brand-text">
+        <h1>Kopi Order</h1>
+        <p>Your neighbourhood kopi stall</p>
+      </div>
+    </div>
+    <button class="cart-badge-btn" id="header-cart-btn" aria-label="View cart">
+      🛒
+      <span class="badge hidden" id="header-badge"></span>
+    </button>
+  </header>
+
+  <!-- Menu View -->
+  <div class="view active" id="view-menu">
+
+    <!-- Type -->
+    <div class="card">
+      <div class="card-label">Choose your drink</div>
+      <div class="option-grid" id="type-grid">
+        <button class="option-btn selected" data-value="Kopi">
+          <span class="opt-label">Kopi</span>
+          <span class="opt-sub">Condensed milk</span>
+        </button>
+        <button class="option-btn" data-value="Kopi-O">
+          <span class="opt-label">Kopi-O</span>
+          <span class="opt-sub">Black with sugar</span>
+        </button>
+        <button class="option-btn" data-value="Kopi-C">
+          <span class="opt-label">Kopi-C</span>
+          <span class="opt-sub">Evaporated milk</span>
+        </button>
+        <button class="option-btn" data-value="Kopi Kosong">
+          <span class="opt-label">Kopi Kosong</span>
+          <span class="opt-sub">Black, no sugar</span>
+        </button>
+        <button class="option-btn" data-value="Teh">
+          <span class="opt-label">Teh</span>
+          <span class="opt-sub">Condensed milk</span>
+        </button>
+        <button class="option-btn" data-value="Teh-O">
+          <span class="opt-label">Teh-O</span>
+          <span class="opt-sub">Black with sugar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Temperature -->
+    <div class="card">
+      <div class="card-label">Temperature</div>
+      <div class="option-grid three-col" id="temp-grid">
+        <button class="option-btn selected" data-value="Hot">
+          <span class="opt-label">🔥 Hot</span>
+          <span class="opt-sub">Panas</span>
+        </button>
+        <button class="option-btn" data-value="Iced">
+          <span class="opt-label">🧊 Iced</span>
+          <span class="opt-sub">Peng</span>
+        </button>
+        <button class="option-btn" data-value="Takeaway">
+          <span class="opt-label">🥡 Bag</span>
+          <span class="opt-sub">Dabao</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Size -->
+    <div class="card">
+      <div class="card-label">Size</div>
+      <div class="option-grid" id="size-grid">
+        <button class="option-btn selected" data-value="Regular">
+          <span class="opt-label">Regular</span>
+          <span class="opt-sub">$1.50</span>
+        </button>
+        <button class="option-btn" data-value="Large">
+          <span class="opt-label">Large</span>
+          <span class="opt-sub">$2.00</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quantity -->
+    <div class="card">
+      <div class="card-label">Quantity</div>
+      <div class="qty-row">
+        <button class="qty-btn" id="qty-dec" aria-label="Decrease">−</button>
+        <span class="qty-value" id="qty-display">1</span>
+        <button class="qty-btn" id="qty-inc" aria-label="Increase">+</button>
+      </div>
+    </div>
+
+    <!-- Add button sticky at bottom -->
+    <div class="add-btn-wrap">
+      <button class="add-btn" id="add-btn">
+        <span>Add to Cart</span>
+        <span id="add-btn-price">· $1.50</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Cart View -->
+  <div class="view" id="view-cart">
+    <div id="cart-content"></div>
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✅</div>
+      <h2>Order Placed!</h2>
+      <p>Your kopi is being prepared.<br/>It'll be ready soon!</p>
+      <button class="new-order-btn" id="new-order-btn">Order Again</button>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" id="tab-menu" aria-label="Menu">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">Menu</span>
+    </button>
+    <button class="tab-btn" id="tab-cart" aria-label="Cart">
+      <span class="tab-icon">🛒</span>
+      <span class="tab-label">Cart</span>
+      <span class="tab-badge hidden" id="tab-badge"></span>
+    </button>
+  </nav>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PRICES = { Regular: 1.50, Large: 2.00 };
+
+  let sel = { type: 'Kopi', temp: 'Hot', size: 'Regular' };
+  let qty = 1;
+  let order = [];
+
+  /* ── Tab switching ── */
+  function showTab(tab) {
+    document.getElementById('view-menu').classList.toggle('active', tab === 'menu');
+    document.getElementById('view-cart').classList.toggle('active', tab === 'cart');
+    document.getElementById('tab-menu').classList.toggle('active', tab === 'menu');
+    document.getElementById('tab-cart').classList.toggle('active', tab === 'cart');
+  }
+
+  document.getElementById('tab-menu').addEventListener('click', () => showTab('menu'));
+  document.getElementById('tab-cart').addEventListener('click', () => showTab('cart'));
+  document.getElementById('header-cart-btn').addEventListener('click', () => showTab('cart'));
+
+  /* ── Option groups ── */
+  function bindGroup(gridId, key) {
+    document.getElementById(gridId).querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(gridId).querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        sel[key] = btn.dataset.value;
+        if (key === 'size') updateAddBtnPrice();
+      });
+    });
+  }
+
+  bindGroup('type-grid', 'type');
+  bindGroup('temp-grid', 'temp');
+  bindGroup('size-grid', 'size');
+
+  /* ── Quantity ── */
+  function updateQty(val) {
+    qty = val;
+    document.getElementById('qty-display').textContent = qty;
+    document.getElementById('qty-dec').disabled = qty <= 1;
+    document.getElementById('qty-inc').disabled = qty >= 9;
+    updateAddBtnPrice();
+  }
+
+  document.getElementById('qty-dec').addEventListener('click', () => updateQty(qty - 1));
+  document.getElementById('qty-inc').addEventListener('click', () => updateQty(qty + 1));
+  updateQty(1);
+
+  function updateAddBtnPrice() {
+    const total = (PRICES[sel.size] * qty).toFixed(2);
+    document.getElementById('add-btn-price').textContent = `· $${total}`;
+  }
+
+  /* ── Add to cart ── */
+  document.getElementById('add-btn').addEventListener('click', () => {
+    const item = { type: sel.type, temp: sel.temp, size: sel.size, qty, price: PRICES[sel.size], id: Date.now() };
+    order.push(item);
+    renderCart();
+    updateBadges();
+    showToast(`Added ${qty}× ${formatName(item)}`);
+  });
+
+  /* ── Cart render ── */
+  function formatName(item) {
+    const tempMap = { Hot: '', Iced: ' Peng', Takeaway: ' (Dabao)' };
+    return `${item.type}${tempMap[item.temp] || ''}`;
+  }
+
+  function renderCart() {
+    const el = document.getElementById('cart-content');
+    const success = document.getElementById('success-screen');
+    success.classList.remove('active');
+
+    if (order.length === 0) {
+      el.innerHTML = `
+        <div class="cart-empty">
+          <span class="empty-icon">🛒</span>
+          <p>Your cart is empty.<br/>Head to the menu to add items!</p>
+        </div>`;
+      return;
+    }
+
+    const total = order.reduce((s, i) => s + i.price * i.qty, 0);
+    const items = order.map(item => `
+      <div class="order-item">
+        <div class="item-info">
+          <div class="item-name">${formatName(item)} ×${item.qty}</div>
+          <div class="item-detail">${item.size} · $${item.price.toFixed(2)} each</div>
+        </div>
+        <span class="item-price">$${(item.price * item.qty).toFixed(2)}</span>
+        <button class="remove-btn" onclick="removeItem(${item.id})" aria-label="Remove">✕</button>
+      </div>`).join('');
+
+    const summaryLines = order.map(item =>
+      `<div class="summary-row"><span>${formatName(item)} ×${item.qty}</span><span>$${(item.price * item.qty).toFixed(2)}</span></div>`
+    ).join('');
+
+    el.innerHTML = `
+      ${items}
+      <div class="summary-card">
+        <div class="s-label">Order Summary</div>
+        ${summaryLines}
+        <div class="summary-row total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+      </div>
+      <div class="place-btn-wrap">
+        <button class="place-btn" id="place-btn">Place Order · $${total.toFixed(2)}</button>
+      </div>`;
+
+    document.getElementById('place-btn').addEventListener('click', placeOrder);
+  }
+
+  function removeItem(id) {
+    order = order.filter(i => i.id !== id);
+    renderCart();
+    updateBadges();
+  }
+
+  function placeOrder() {
+    order = [];
+    updateBadges();
+    document.getElementById('cart-content').innerHTML = '';
+    document.getElementById('success-screen').classList.add('active');
+  }
+
+  document.getElementById('new-order-btn').addEventListener('click', () => {
+    document.getElementById('success-screen').classList.remove('active');
+    renderCart();
+    showTab('menu');
+  });
+
+  /* ── Badges ── */
+  function updateBadges() {
+    const count = order.reduce((s, i) => s + i.qty, 0);
+    const hidden = count === 0;
+    const label = count > 9 ? '9+' : String(count);
+    ['header-badge', 'tab-badge'].forEach(id => {
+      const el = document.getElementById(id);
+      el.textContent = label;
+      el.classList.toggle('hidden', hidden);
+    });
+  }
+
+  /* ── Toast ── */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  renderCart();
+</script>
+</body>
+</html>

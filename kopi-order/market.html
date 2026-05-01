@@ -355,27 +355,44 @@ function fillCard(stock, data) {
     <div class="stock-change ${cls}">${arrow} ${fmtPct(pct)}</div>`;
 }
 
-/* ── Fetch via allorigins CORS proxy ── */
-async function fetchStock(symbol, range, interval) {
-  const target = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
-  const proxy  = `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`;
+/* ── Fetch with multiple CORS proxy fallbacks ── */
+function makeProxyUrls(target) {
+  const enc = encodeURIComponent(target);
+  return [
+    `https://corsproxy.io/?${enc}`,
+    `https://api.allorigins.win/raw?url=${enc}`,
+    `https://api.codetabs.com/v1/proxy?quest=${enc}`,
+  ];
+}
 
-  const res  = await fetch(proxy, { signal: AbortSignal.timeout(12000) });
-  const wrap = await res.json();
-  const json = JSON.parse(wrap.contents);
-
+function parseYahoo(json) {
   const result = json?.chart?.result?.[0];
   if (!result) throw new Error('no result');
-
   const closes = result.indicators.quote[0].close;
   const valid  = closes.filter(c => c != null);
   if (!valid.length) throw new Error('no closes');
-
   return {
     current:   result.meta.regularMarketPrice ?? valid[valid.length - 1],
     weekStart: valid[0],
     closes,
   };
+}
+
+async function fetchStock(symbol, range, interval) {
+  const target = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
+  const urls = makeProxyUrls(target);
+  let lastErr;
+  for (const url of urls) {
+    try {
+      const res  = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      return parseYahoo(json);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
 }
 
 /* ── Load all ── */

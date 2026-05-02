@@ -231,10 +231,10 @@
   </header>
 
   <div class="period-bar">
-    <button class="period-pill active" data-range="5d" data-interval="1d">1W</button>
-    <button class="period-pill"        data-range="1mo" data-interval="1d">1M</button>
-    <button class="period-pill"        data-range="3mo" data-interval="1wk">3M</button>
-    <button class="period-pill"        data-range="1y"  data-interval="1wk">1Y</button>
+    <button class="period-pill active" data-days="10"  data-si="d">1W</button>
+    <button class="period-pill"        data-days="35"  data-si="d">1M</button>
+    <button class="period-pill"        data-days="95"  data-si="w">3M</button>
+    <button class="period-pill"        data-days="370" data-si="w">1Y</button>
   </div>
 
   <div id="error-area"></div>
@@ -260,20 +260,31 @@
 
 <script>
 const STOCKS = [
-  { symbol: 'ES3.SI', name: 'SPDR STI ETF',        group: 'sg-etf',  currency: 'SGD' },
-  { symbol: 'G3B.SI', name: 'Nikko AM STI ETF',     group: 'sg-etf',  currency: 'SGD' },
-  { symbol: 'D05.SI', name: 'DBS Group',             group: 'sg-blue', currency: 'SGD' },
-  { symbol: 'O39.SI', name: 'OCBC Bank',             group: 'sg-blue', currency: 'SGD' },
-  { symbol: 'U11.SI', name: 'UOB',                   group: 'sg-blue', currency: 'SGD' },
-  { symbol: 'VOO',    name: 'Vanguard S&P 500 ETF',  group: 'us',      currency: 'USD' },
-  { symbol: 'NVDA',   name: 'NVIDIA',                group: 'us',      currency: 'USD' },
-  { symbol: 'AAPL',   name: 'Apple',                 group: 'us',      currency: 'USD' },
+  { symbol: 'ES3.SI', stooq: 'es3.si', name: 'SPDR STI ETF',        group: 'sg-etf',  currency: 'SGD' },
+  { symbol: 'G3B.SI', stooq: 'g3b.si', name: 'Nikko AM STI ETF',     group: 'sg-etf',  currency: 'SGD' },
+  { symbol: 'D05.SI', stooq: 'd05.si', name: 'DBS Group',             group: 'sg-blue', currency: 'SGD' },
+  { symbol: 'O39.SI', stooq: 'o39.si', name: 'OCBC Bank',             group: 'sg-blue', currency: 'SGD' },
+  { symbol: 'U11.SI', stooq: 'u11.si', name: 'UOB',                   group: 'sg-blue', currency: 'SGD' },
+  { symbol: 'VOO',    stooq: 'voo.us', name: 'Vanguard S&P 500 ETF',  group: 'us',      currency: 'USD' },
+  { symbol: 'NVDA',   stooq: 'nvda.us',name: 'NVIDIA',                group: 'us',      currency: 'USD' },
+  { symbol: 'AAPL',   stooq: 'aapl.us',name: 'Apple',                 group: 'us',      currency: 'USD' },
 ];
 
 const GRIDS = { 'sg-etf': 'grid-sg-etf', 'sg-blue': 'grid-sg-blue', 'us': 'grid-us' };
 
-let currentRange    = '5d';
-let currentInterval = '1d';
+let currentDays = 10;
+let currentSI   = 'd';
+
+/* ── Date helpers ── */
+function dateStr(d) {
+  return d.toISOString().slice(0, 10).replace(/-/g, '');
+}
+
+function daysAgo(n) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d;
+}
 
 /* ── Sparkline SVG ── */
 function sparkSVG(prices, positive) {
@@ -281,10 +292,10 @@ function sparkSVG(prices, positive) {
   if (pts.length < 2) return `<svg width="80" height="36"></svg>`;
   const W = 80, H = 36, pad = 2;
   const mn = Math.min(...pts), mx = Math.max(...pts);
-  const range = mx - mn || Math.abs(mn) * 0.01 || 1;
+  const rng = mx - mn || Math.abs(mn) * 0.01 || 1;
   const mapped = pts.map((p, i) => {
     const x = (pad + (i / (pts.length - 1)) * (W - pad * 2)).toFixed(1);
-    const y = (H - pad - ((p - mn) / range) * (H - pad * 2)).toFixed(1);
+    const y = (H - pad - ((p - mn) / rng) * (H - pad * 2)).toFixed(1);
     return `${x},${y}`;
   });
   const line = mapped.join(' ');
@@ -306,7 +317,6 @@ function fmtPct(pct) {
   return (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
 }
 
-/* ── Card ID ── */
 function cardId(symbol) { return 'card-' + symbol.replace(/\./g, '-'); }
 
 /* ── Render skeleton cards ── */
@@ -339,14 +349,14 @@ function fillCard(stock, data) {
   if (!data) {
     card.querySelector('.stock-price-block').innerHTML =
       `<div class="stock-price" style="color:var(--text-sub)">N/A</div>
-       <div class="stock-change flat">— error</div>`;
+       <div class="stock-change flat">— no data</div>`;
     card.querySelector('.stock-spark').innerHTML = `<svg width="80" height="36"></svg>`;
     return;
   }
 
-  const { current, weekStart, closes } = data;
-  const pct = ((current - weekStart) / weekStart) * 100;
-  const cls = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
+  const { current, start, closes } = data;
+  const pct   = ((current - start) / start) * 100;
+  const cls   = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
   const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
 
   card.querySelector('.stock-spark').innerHTML = sparkSVG(closes, pct >= 0);
@@ -355,44 +365,47 @@ function fillCard(stock, data) {
     <div class="stock-change ${cls}">${arrow} ${fmtPct(pct)}</div>`;
 }
 
-/* ── Fetch with multiple CORS proxy fallbacks ── */
-function makeProxyUrls(target) {
-  const enc = encodeURIComponent(target);
-  return [
+/* ── Parse Stooq CSV  (Date,Open,High,Low,Close,Volume) ── */
+function parseStooqCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l && !l.toLowerCase().startsWith('no '));
+  if (lines.length < 2) throw new Error('no rows');
+  const closes = lines.slice(1)
+    .map(l => parseFloat(l.split(',')[4]))
+    .filter(p => !isNaN(p));
+  if (!closes.length) throw new Error('no closes');
+  return { current: closes[closes.length - 1], start: closes[0], closes };
+}
+
+/* ── Fetch from Stooq (direct, then proxy fallback) ── */
+async function fetchStock(stooq, days, si) {
+  const d2  = dateStr(new Date());
+  const d1  = dateStr(daysAgo(days));
+  const url = `https://stooq.com/q/d/l/?s=${stooq}&d1=${d1}&d2=${d2}&i=${si}`;
+
+  // 1 — try direct (Stooq sets Access-Control-Allow-Origin: *)
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(9000) });
+    if (res.ok) {
+      const txt = await res.text();
+      return parseStooqCSV(txt);
+    }
+  } catch (_) {}
+
+  // 2 — proxy fallback
+  const enc = encodeURIComponent(url);
+  for (const proxy of [
     `https://corsproxy.io/?${enc}`,
     `https://api.allorigins.win/raw?url=${enc}`,
-    `https://api.codetabs.com/v1/proxy?quest=${enc}`,
-  ];
-}
-
-function parseYahoo(json) {
-  const result = json?.chart?.result?.[0];
-  if (!result) throw new Error('no result');
-  const closes = result.indicators.quote[0].close;
-  const valid  = closes.filter(c => c != null);
-  if (!valid.length) throw new Error('no closes');
-  return {
-    current:   result.meta.regularMarketPrice ?? valid[valid.length - 1],
-    weekStart: valid[0],
-    closes,
-  };
-}
-
-async function fetchStock(symbol, range, interval) {
-  const target = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
-  const urls = makeProxyUrls(target);
-  let lastErr;
-  for (const url of urls) {
+  ]) {
     try {
-      const res  = await fetch(url, { signal: AbortSignal.timeout(10000) });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      return parseYahoo(json);
-    } catch (e) {
-      lastErr = e;
-    }
+      const res = await fetch(proxy, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) continue;
+      const txt = await res.text();
+      return parseStooqCSV(txt);
+    } catch (_) {}
   }
-  throw lastErr;
+
+  throw new Error('all sources failed');
 }
 
 /* ── Load all ── */
@@ -403,30 +416,25 @@ async function loadAll() {
   renderSkeletons();
 
   const settled = await Promise.allSettled(
-    STOCKS.map(s => fetchStock(s.symbol, currentRange, currentInterval))
+    STOCKS.map(s => fetchStock(s.stooq, currentDays, currentSI))
   );
 
   let fails = 0;
   settled.forEach((r, i) => {
-    if (r.status === 'fulfilled') {
-      fillCard(STOCKS[i], r.value);
-    } else {
-      fillCard(STOCKS[i], null);
-      fails++;
-    }
+    if (r.status === 'fulfilled') fillCard(STOCKS[i], r.value);
+    else { fillCard(STOCKS[i], null); fails++; }
   });
 
   if (fails) {
     document.getElementById('error-area').innerHTML =
-      `<div class="error-banner">⚠ ${fails} ticker${fails > 1 ? 's' : ''} could not be loaded.
-      Data is fetched from Yahoo Finance via a public CORS proxy — try refreshing in a moment.</div>`;
+      `<div class="error-banner">⚠ ${fails} ticker${fails > 1 ? 's' : ''} could not be loaded — market may be closed or the ticker is unavailable. Try refreshing.</div>`;
   }
 
   const now = new Date();
-  const periodLabel = document.querySelector('.period-pill.active').textContent;
+  const label = document.querySelector('.period-pill.active').textContent;
   document.getElementById('footer').innerHTML =
     `Updated ${now.toLocaleTimeString()} · ${now.toLocaleDateString()} ·
-    <a href="https://finance.yahoo.com" target="_blank" rel="noopener">Yahoo Finance</a> · ${periodLabel} view`;
+    <a href="https://stooq.com" target="_blank" rel="noopener">Stooq</a> · ${label} view`;
 
   btn.classList.remove('spinning');
 }
@@ -436,19 +444,14 @@ document.querySelectorAll('.period-pill').forEach(pill => {
   pill.addEventListener('click', () => {
     document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
-    currentRange    = pill.dataset.range;
-    currentInterval = pill.dataset.interval;
+    currentDays = parseInt(pill.dataset.days);
+    currentSI   = pill.dataset.si;
     loadAll();
   });
 });
 
-/* ── Refresh button ── */
 document.getElementById('refresh-btn').addEventListener('click', loadAll);
-
-/* ── Auto-refresh every 5 minutes ── */
 setInterval(loadAll, 5 * 60 * 1000);
-
-/* ── Initial load ── */
 loadAll();
 </script>
 </body>

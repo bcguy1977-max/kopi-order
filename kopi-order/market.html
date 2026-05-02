@@ -7,21 +7,15 @@
   <title>Market Watch</title>
   <style>
     :root {
-      --primary:      #d4a84b;
-      --primary-dim:  rgba(212, 168, 75, 0.1);
-      --primary-dark: #b88c35;
-      --bg:           #0d0d0d;
-      --surface:      #1a1a1a;
-      --surface-hi:   #242424;
-      --border:       #2e2e2e;
-      --text:         #f0f0f0;
-      --text-sub:     #777777;
-      --green:        #34c759;
-      --green-dim:    rgba(52, 199, 89, 0.12);
-      --red:          #ff3b30;
-      --red-dim:      rgba(255, 59, 48, 0.12);
-      --safe-top:     env(safe-area-inset-top, 0px);
-      --safe-bot:     env(safe-area-inset-bottom, 0px);
+      --primary:   #d4a84b;
+      --bg:        #0d0d0d;
+      --border:    #1f1f1f;
+      --text:      #ececec;
+      --text-sub:  #6e6e6e;
+      --green:     #34c759;
+      --red:       #ff3b30;
+      --safe-top:  env(safe-area-inset-top, 0px);
+      --safe-bot:  env(safe-area-inset-bottom, 0px);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -35,142 +29,121 @@
     }
 
     .container {
-      max-width: 560px;
+      max-width: 520px;
       margin: 0 auto;
-      padding: 0 16px calc(32px + var(--safe-bot));
+      padding: 0 20px calc(40px + var(--safe-bot));
     }
 
     /* ── Header ── */
     header {
-      padding-top: calc(20px + var(--safe-top));
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 28px;
+      padding-top: calc(28px + var(--safe-top));
+      padding-bottom: 24px;
+      margin-bottom: 8px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
     }
 
-    .brand { display: flex; align-items: center; gap: 10px; }
-
-    .brand-monogram {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; flex-shrink: 0;
+    h1 {
+      font-size: 1.05rem; font-weight: 600;
+      color: var(--text); letter-spacing: -0.2px;
     }
 
-    .brand-text h1 {
-      font-size: 1rem; font-weight: 700;
-      color: var(--text); line-height: 1; letter-spacing: -0.3px;
-    }
-
-    .brand-text p {
-      font-size: 0.68rem; color: var(--text-sub); margin-top: 3px;
-    }
-
-    .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
 
     .back-btn, .refresh-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: none;
+      border: none;
       color: var(--text-sub);
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      padding: 0;
+      font-size: 0.82rem;
+      font-weight: 500;
       cursor: pointer;
       touch-action: manipulation;
-      transition: color 0.15s, border-color 0.15s;
-      display: flex; align-items: center; gap: 5px;
+      transition: color 0.15s;
       text-decoration: none;
-      white-space: nowrap;
+      font-family: inherit;
     }
 
-    .back-btn:hover, .refresh-btn:hover { color: var(--primary); border-color: var(--primary); }
-    .refresh-btn:active { transform: scale(0.96); }
+    .back-btn:hover, .refresh-btn:hover { color: var(--text); }
     .refresh-btn.spinning .r-icon { display: inline-block; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Period pill ── */
     .period-bar {
-      display: flex; gap: 6px; margin-bottom: 24px;
+      display: flex; gap: 4px; margin-bottom: 28px;
     }
 
     .period-pill {
-      padding: 6px 14px; border-radius: 100px;
-      font-size: 0.75rem; font-weight: 700;
-      border: 1px solid var(--border);
-      background: var(--surface-hi);
+      padding: 5px 12px; border-radius: 6px;
+      font-size: 0.78rem; font-weight: 500;
+      border: none;
+      background: none;
       color: var(--text-sub);
       cursor: pointer; touch-action: manipulation;
-      transition: all 0.15s;
+      font-family: inherit;
+      transition: color 0.15s, background 0.15s;
     }
 
     .period-pill.active {
-      background: var(--primary-dim);
-      border-color: var(--primary);
-      color: var(--primary);
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
     }
 
     /* ── Section ── */
-    .section { margin-bottom: 28px; }
+    .section { margin-bottom: 32px; }
 
     .section-title {
-      font-size: 0.68rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.2px;
-      color: var(--text-sub); margin-bottom: 10px; padding-left: 2px;
+      font-size: 0.72rem; font-weight: 500;
+      color: var(--text-sub); margin-bottom: 4px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
     }
 
-    /* ── Stock card ── */
+    /* ── Stock row ── */
     .stock-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px 18px;
-      margin-bottom: 9px;
+      padding: 14px 0;
       display: flex;
       align-items: center;
       gap: 12px;
-      transition: border-color 0.2s;
+      border-bottom: 1px solid var(--border);
     }
 
-    .stock-card:hover { border-color: #3e3e3e; }
+    .section > div > .stock-card:last-child { border-bottom: none; }
 
     .stock-info { flex: 1; min-width: 0; }
 
     .stock-name {
-      font-weight: 700; font-size: 0.92rem; color: var(--text);
+      font-weight: 500; font-size: 0.92rem; color: var(--text);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     .stock-ticker {
-      font-size: 0.7rem; color: var(--text-sub); margin-top: 2px; letter-spacing: 0.3px;
+      font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;
     }
-
-    .stock-spark { flex-shrink: 0; }
 
     .stock-price-block { text-align: right; flex-shrink: 0; }
 
     .stock-price {
-      font-size: 1rem; font-weight: 700; color: var(--text); white-space: nowrap;
+      font-size: 0.95rem; font-weight: 500; color: var(--text); white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .stock-change {
-      font-size: 0.74rem; font-weight: 700; margin-top: 5px;
-      display: inline-flex; align-items: center; gap: 3px;
-      padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+      font-size: 0.78rem; font-weight: 500; margin-top: 3px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
-    .stock-change.up   { color: var(--green); background: var(--green-dim); }
-    .stock-change.down { color: var(--red);   background: var(--red-dim);   }
-    .stock-change.flat { color: var(--text-sub); background: var(--surface-hi); }
+    .stock-change.up   { color: var(--green); }
+    .stock-change.down { color: var(--red);   }
+    .stock-change.flat { color: var(--text-sub); }
 
     /* ── Loading skeleton ── */
     .skel {
-      background: var(--surface-hi);
-      border-radius: 5px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 3px;
       animation: pulse 1.4s ease-in-out infinite;
     }
 
@@ -179,53 +152,36 @@
       50%       { opacity: 1;   }
     }
 
-    .skel-price { width: 70px; height: 14px; margin-left: auto; }
-    .skel-change { width: 54px; height: 22px; margin-left: auto; margin-top: 5px; }
-    .skel-spark { width: 80px; height: 36px; }
+    .skel-price { width: 70px; height: 13px; margin-left: auto; }
+    .skel-change { width: 54px; height: 13px; margin-left: auto; margin-top: 6px; }
 
     /* ── Error banner ── */
     .error-banner {
-      background: rgba(255,59,48,0.08);
-      border: 1px solid rgba(255,59,48,0.2);
-      border-radius: 12px;
-      padding: 11px 16px;
+      padding: 10px 0;
       font-size: 0.8rem;
-      color: #ff6b6b;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      color: var(--red);
+      margin-bottom: 16px;
     }
 
     /* ── Footer ── */
     .footer {
-      font-size: 0.7rem; color: var(--text-sub);
-      text-align: center; line-height: 1.7;
-      margin-top: 8px;
+      font-size: 0.72rem; color: var(--text-sub);
+      text-align: center; line-height: 1.6;
+      margin-top: 24px;
     }
 
-    .footer a { color: var(--primary); text-decoration: none; }
-
-    /* ── Responsive ── */
-    @media (max-width: 400px) {
-      .stock-spark { display: none; }
-      .back-btn span { display: none; }
-    }
+    .footer a { color: var(--text-sub); text-decoration: underline; }
   </style>
 </head>
 <body>
 <div class="container">
 
   <header>
-    <div class="brand">
-      <div class="brand-monogram">📈</div>
-      <div class="brand-text">
-        <h1>Market Watch</h1>
-        <p>SG &amp; US equities · live prices</p>
-      </div>
-    </div>
+    <h1>Market</h1>
     <div class="header-right">
-      <a class="back-btn" href="./index.html">← <span>Kopi</span></a>
+      <a class="back-btn" href="./index.html">Back</a>
       <button class="refresh-btn" id="refresh-btn" aria-label="Refresh">
-        <span class="r-icon">↻</span> Refresh
+        <span class="r-icon">↻</span>
       </button>
     </div>
   </header>
@@ -240,17 +196,17 @@
   <div id="error-area"></div>
 
   <div class="section">
-    <div class="section-title">Singapore ETFs</div>
+    <div class="section-title">SG ETFs</div>
     <div id="grid-sg-etf"></div>
   </div>
 
   <div class="section">
-    <div class="section-title">Singapore Blue Chips</div>
+    <div class="section-title">SG Blue Chips</div>
     <div id="grid-sg-blue"></div>
   </div>
 
   <div class="section">
-    <div class="section-title">US Stocks &amp; ETFs</div>
+    <div class="section-title">US</div>
     <div id="grid-us"></div>
   </div>
 
@@ -286,28 +242,6 @@ function daysAgo(n) {
   return d;
 }
 
-/* ── Sparkline SVG ── */
-function sparkSVG(prices, positive) {
-  const pts = prices.filter(p => p != null && !isNaN(p));
-  if (pts.length < 2) return `<svg width="80" height="36"></svg>`;
-  const W = 80, H = 36, pad = 2;
-  const mn = Math.min(...pts), mx = Math.max(...pts);
-  const rng = mx - mn || Math.abs(mn) * 0.01 || 1;
-  const mapped = pts.map((p, i) => {
-    const x = (pad + (i / (pts.length - 1)) * (W - pad * 2)).toFixed(1);
-    const y = (H - pad - ((p - mn) / rng) * (H - pad * 2)).toFixed(1);
-    return `${x},${y}`;
-  });
-  const line = mapped.join(' ');
-  const area = `${pad},${H - pad} ${line} ${W - pad},${H - pad}`;
-  const stroke = positive ? '#34c759' : '#ff3b30';
-  const fill   = positive ? 'rgba(52,199,89,0.15)' : 'rgba(255,59,48,0.15)';
-  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    <polygon points="${area}" fill="${fill}"/>
-    <polyline points="${line}" fill="none" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`;
-}
-
 /* ── Format helpers ── */
 function fmtPrice(p, currency) {
   return (currency === 'SGD' ? 'S$' : '$') + p.toFixed(2);
@@ -332,7 +266,6 @@ function renderSkeletons() {
         <div class="stock-name">${s.name}</div>
         <div class="stock-ticker">${s.symbol}</div>
       </div>
-      <div class="stock-spark"><div class="skel skel-spark"></div></div>
       <div class="stock-price-block">
         <div class="skel skel-price"></div>
         <div class="skel skel-change"></div>
@@ -348,21 +281,18 @@ function fillCard(stock, data) {
 
   if (!data) {
     card.querySelector('.stock-price-block').innerHTML =
-      `<div class="stock-price" style="color:var(--text-sub)">N/A</div>
-       <div class="stock-change flat">— no data</div>`;
-    card.querySelector('.stock-spark').innerHTML = `<svg width="80" height="36"></svg>`;
+      `<div class="stock-price" style="color:var(--text-sub)">—</div>
+       <div class="stock-change flat">no data</div>`;
     return;
   }
 
-  const { current, start, closes } = data;
-  const pct   = ((current - start) / start) * 100;
-  const cls   = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
-  const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
+  const { current, start } = data;
+  const pct = ((current - start) / start) * 100;
+  const cls = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
 
-  card.querySelector('.stock-spark').innerHTML = sparkSVG(closes, pct >= 0);
   card.querySelector('.stock-price-block').innerHTML = `
     <div class="stock-price">${fmtPrice(current, stock.currency)}</div>
-    <div class="stock-change ${cls}">${arrow} ${fmtPct(pct)}</div>`;
+    <div class="stock-change ${cls}">${fmtPct(pct)}</div>`;
 }
 
 /* ── Parse Stooq CSV  (Date,Open,High,Low,Close,Volume) ── */
@@ -427,14 +357,12 @@ async function loadAll() {
 
   if (fails) {
     document.getElementById('error-area').innerHTML =
-      `<div class="error-banner">⚠ ${fails} ticker${fails > 1 ? 's' : ''} could not be loaded — market may be closed or the ticker is unavailable. Try refreshing.</div>`;
+      `<div class="error-banner">${fails} ticker${fails > 1 ? 's' : ''} unavailable</div>`;
   }
 
   const now = new Date();
-  const label = document.querySelector('.period-pill.active').textContent;
   document.getElementById('footer').innerHTML =
-    `Updated ${now.toLocaleTimeString()} · ${now.toLocaleDateString()} ·
-    <a href="https://stooq.com" target="_blank" rel="noopener">Stooq</a> · ${label} view`;
+    `Updated ${now.toLocaleTimeString()} · <a href="https://stooq.com" target="_blank" rel="noopener">Stooq</a>`;
 
   btn.classList.remove('spinning');
 }

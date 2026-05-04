@@ -1,0 +1,18 @@
+{
+  "name": "kopi-order GitHub App",
+  "url": "https://github.com/bcguy1977-max/kopi-order",
+  "hook_attributes": {
+    "url": "https://example.com/webhook"
+  },
+  "redirect_url": "https://example.com/setup",
+  "public": false,
+  "default_permissions": {
+    "contents": "read",
+    "issues": "write",
+    "metadata": "read"
+  },
+  "default_events": [
+    "pull_request",
+    "push"
+  ]
+}

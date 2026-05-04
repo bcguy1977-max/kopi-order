@@ -167,6 +167,35 @@
       font-size: 0.68rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 1.2px;
       color: var(--text-sub); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .step-num {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--primary); color: #0d0d0d;
+      font-size: 0.7rem; font-weight: 800;
+      display: inline-flex; align-items: center; justify-content: center;
+      letter-spacing: 0; flex-shrink: 0;
+    }
+
+    /* ── Live preview pill ── */
+    .preview-pill {
+      background: var(--primary-dim);
+      border: 1px solid rgba(212,168,75,0.3);
+      border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .preview-pill .preview-label {
+      font-size: 0.62rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.4px;
+      color: var(--primary); margin-bottom: 4px;
+    }
+
+    .preview-pill .preview-name {
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--text); letter-spacing: -0.2px;
     }
 
     /* ── Option grids ── */
@@ -496,38 +525,95 @@
   <!-- Menu View -->
   <div class="view active" id="view-menu">
 
+    <!-- Live preview -->
+    <div class="preview-pill">
+      <div class="preview-label">Your order</div>
+      <div class="preview-name" id="preview-name">Kopi</div>
+    </div>
+
+    <!-- Step 1: Drink type -->
     <div class="card">
-      <div class="card-label">Choose your drink</div>
+      <div class="card-label"><span class="step-num">1</span>Choose your drink</div>
       <div class="option-grid" id="type-grid">
         <button class="option-btn selected" data-value="Kopi">
           <span class="opt-label">Kopi</span>
-          <span class="opt-sub">Condensed milk</span>
-        </button>
-        <button class="option-btn" data-value="Kopi-O">
-          <span class="opt-label">Kopi-O</span>
-          <span class="opt-sub">Black with sugar</span>
-        </button>
-        <button class="option-btn" data-value="Kopi-C">
-          <span class="opt-label">Kopi-C</span>
-          <span class="opt-sub">Evaporated milk</span>
-        </button>
-        <button class="option-btn" data-value="Kopi Kosong">
-          <span class="opt-label">Kopi Kosong</span>
-          <span class="opt-sub">Black, no sugar</span>
+          <span class="opt-sub">Coffee</span>
         </button>
         <button class="option-btn" data-value="Teh">
           <span class="opt-label">Teh</span>
-          <span class="opt-sub">Condensed milk</span>
+          <span class="opt-sub">Tea</span>
         </button>
-        <button class="option-btn" data-value="Teh-O">
-          <span class="opt-label">Teh-O</span>
-          <span class="opt-sub">Black with sugar</span>
+        <button class="option-btn" data-value="Milo">
+          <span class="opt-label">Milo</span>
+          <span class="opt-sub">Chocolate malt</span>
+        </button>
+        <button class="option-btn" data-value="Horlicks">
+          <span class="opt-label">Horlicks</span>
+          <span class="opt-sub">Malted</span>
         </button>
       </div>
     </div>
 
+    <!-- Step 2: Milk -->
     <div class="card">
-      <div class="card-label">Temperature</div>
+      <div class="card-label"><span class="step-num">2</span>Milk</div>
+      <div class="option-grid three-col" id="milk-grid">
+        <button class="option-btn selected" data-value="condensed">
+          <span class="opt-label">With milk</span>
+          <span class="opt-sub">Condensed</span>
+        </button>
+        <button class="option-btn" data-value="C">
+          <span class="opt-label">C</span>
+          <span class="opt-sub">Evaporated</span>
+        </button>
+        <button class="option-btn" data-value="O">
+          <span class="opt-label">None</span>
+          <span class="opt-sub">No milk</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Sweetness -->
+    <div class="card">
+      <div class="card-label"><span class="step-num">3</span>Sweetness</div>
+      <div class="option-grid three-col" id="sweet-grid">
+        <button class="option-btn selected" data-value="normal">
+          <span class="opt-label">Normal</span>
+          <span class="opt-sub">Default</span>
+        </button>
+        <button class="option-btn" data-value="Siew Dai">
+          <span class="opt-label">Siew Dai</span>
+          <span class="opt-sub">Less sugar</span>
+        </button>
+        <button class="option-btn" data-value="Kosong">
+          <span class="opt-label">Kosong</span>
+          <span class="opt-sub">No sugar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Thickness -->
+    <div class="card">
+      <div class="card-label"><span class="step-num">4</span>Thickness</div>
+      <div class="option-grid three-col" id="thick-grid">
+        <button class="option-btn selected" data-value="normal">
+          <span class="opt-label">Normal</span>
+          <span class="opt-sub">Default</span>
+        </button>
+        <button class="option-btn" data-value="Gao">
+          <span class="opt-label">Gao</span>
+          <span class="opt-sub">Thick</span>
+        </button>
+        <button class="option-btn" data-value="Pok">
+          <span class="opt-label">Pok</span>
+          <span class="opt-sub">Light</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 5: Temperature -->
+    <div class="card">
+      <div class="card-label"><span class="step-num">5</span>Temperature</div>
       <div class="option-grid three-col" id="temp-grid">
         <button class="option-btn selected" data-value="Hot">
           <span class="opt-label">🔥 Hot</span>
@@ -544,8 +630,9 @@
       </div>
     </div>
 
+    <!-- Step 6: Size -->
     <div class="card">
-      <div class="card-label">Size</div>
+      <div class="card-label"><span class="step-num">6</span>Size</div>
       <div class="option-grid" id="size-grid">
         <button class="option-btn selected" data-value="Regular">
           <span class="opt-label">Regular</span>
@@ -558,8 +645,9 @@
       </div>
     </div>
 
+    <!-- Step 7: Quantity -->
     <div class="card">
-      <div class="card-label">Quantity</div>
+      <div class="card-label"><span class="step-num">7</span>Quantity</div>
       <div class="qty-row">
         <button class="qty-btn" id="qty-dec" aria-label="Decrease">−</button>
         <span class="qty-value" id="qty-display">1</span>
@@ -619,7 +707,7 @@
   const QUEUE_MS    = 60 * 1000;        // queued for 1 min
   const PREPARE_MS  = 4 * 60 * 1000;   // ready after 4 min
 
-  let sel = { type: 'Kopi', temp: 'Hot', size: 'Regular' };
+  let sel = { type: 'Kopi', milk: 'condensed', sweet: 'normal', thick: 'normal', temp: 'Hot', size: 'Regular' };
   let qty = 1;
   let cart = [];
   let ordersTimer = null;
@@ -688,13 +776,17 @@
         btn.classList.add('selected');
         sel[key] = btn.dataset.value;
         if (key === 'size') updateAddBtnPrice();
+        updatePreview();
       });
     });
   }
 
-  bindGroup('type-grid', 'type');
-  bindGroup('temp-grid', 'temp');
-  bindGroup('size-grid', 'size');
+  bindGroup('type-grid',  'type');
+  bindGroup('milk-grid',  'milk');
+  bindGroup('sweet-grid', 'sweet');
+  bindGroup('thick-grid', 'thick');
+  bindGroup('temp-grid',  'temp');
+  bindGroup('size-grid',  'size');
 
   /* ── Quantity ── */
   function updateQty(val) {
@@ -716,18 +808,29 @@
 
   /* ── Add to cart ── */
   document.getElementById('add-btn').addEventListener('click', () => {
-    const item = { type: sel.type, temp: sel.temp, size: sel.size, qty, price: PRICES[sel.size], id: Date.now() };
+    const item = { ...sel, qty, price: PRICES[sel.size], id: Date.now() };
     cart.push(item);
     renderCart();
     updateBadges();
     showToast('Added ' + qty + '× ' + formatName(item));
   });
 
-  /* ── Format helpers ── */
+  /* ── Name assembly (kopitiam-style: Kopi C Siew Dai Gao Peng) ── */
   function formatName(item) {
-    const tempMap = { Hot: '', Iced: ' Peng', Takeaway: ' (Dabao)' };
-    return item.type + (tempMap[item.temp] || '');
+    const parts = [item.type];
+    if (item.milk === 'C')      parts.push('C');
+    else if (item.milk === 'O') parts.push('O');
+    if (item.sweet && item.sweet !== 'normal') parts.push(item.sweet);
+    if (item.thick && item.thick !== 'normal') parts.push(item.thick);
+    if (item.temp === 'Iced')          parts.push('Peng');
+    else if (item.temp === 'Takeaway') parts.push('(Dabao)');
+    return parts.join(' ');
   }
+
+  function updatePreview() {
+    document.getElementById('preview-name').textContent = formatName(sel);
+  }
+  updatePreview();
 
   /* ── Cart render ── */
   function renderCart() {
